@@ -249,7 +249,7 @@ uint32_t alu_shl(uint32_t src, uint32_t dest, size_t data_size)
 	//cpu.eflags.OF is ignored.
 	alu_set_SF_ZF_PF(res, data_size);
 	cpu.eflags.CF = (data_size < src) ? 0 : signx(dest, data_size - src + 1); //!!(bitMask(data_size - src + 1) & dest);
-	return res;
+	return cutx(res);
 #endif
 }
 
