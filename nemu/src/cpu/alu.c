@@ -104,7 +104,7 @@ uint32_t alu_sbb(uint32_t src, uint32_t dest, size_t data_size)
 #else
 	uint32_t res = dest - src - cpu.eflags.CF;
 	alu_set_SBB_OF(res, src, dest, data_size);
-	al_set_SF_ZF_PF(res, data_size);
+	alu_set_SF_ZF_PF(res, data_size);
 	alu_set_SBB_CF(src, dest, data_size);
 	return cutx(res, data_size);
 #endif
