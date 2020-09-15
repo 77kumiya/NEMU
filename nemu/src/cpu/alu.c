@@ -2,8 +2,10 @@
 
 #ifndef NEMU_REF_ALU
 
-#define cutx(x, size) ((~((0xffffffff << ((size) - 1)) << 1)) & (x))	// return the lower <size> bits of x.
-#define signx(x, size) (!!((1u << ((size) - 1)) & (x)))	// return the sign bit of x, a integer of <size> bits length.
+#define bitMask(size) (1u << ((size) - 1))	// return a integer whose size-th (1 indexed) lower bit is 1 and others are 0s.
+#define signx(x, size) (!!(bitMask(size) & (x)))	// return the sign bit of x, a integer of <size> bits length.
+#define mask(size) ((~0u) >> (32 - (size)))	//return a integer whose lower <size> bits are 1s and others are 0s.
+#define cutx(x, size) (mask(size) & (x))	// return the lower <size> bits of x.
 
 inline void alu_set_SF_ZF_PF(uint32_t res, size_t data_size)
 {
@@ -12,7 +14,11 @@ inline void alu_set_SF_ZF_PF(uint32_t res, size_t data_size)
 	
 	uint8_t pf_t = 1;
 	int i;
-	for(i=0; i<8; ++i) pf_t ^= (res>>i)&1;
+	for(i=0; i<8; ++i)
+	{
+		pf_t ^= res & 1;
+		res = res >> 1;
+	}
 	cpu.eflags.PF = pf_t;
 }
 
@@ -228,10 +234,13 @@ uint32_t alu_shl(uint32_t src, uint32_t dest, size_t data_size)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_shl(src, dest, data_size);
 #else
-	printf("\e[0;31mPlease implement me at alu.c\e[0m\n");
-	fflush(stdout);
-	assert(0);
-	return 0;
+	src &= 0x1f;
+	uint32_t msk = mask(data_size);
+	uint32_t res = (((dest & msk) << src) & msk) | ((~msk) & dest);
+	//cpu.eflags.OF is ignored.
+	alu_set_SF_ZF_PF(res, data_size);
+	cpu.eflags.CF = (data_size < src) ? 0 : !!(bitMask(data_size - src + 1) & dest);
+	return res;
 #endif
 }
 
@@ -240,10 +249,13 @@ uint32_t alu_shr(uint32_t src, uint32_t dest, size_t data_size)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_shr(src, dest, data_size);
 #else
-	printf("\e[0;31mPlease implement me at alu.c\e[0m\n");
-	fflush(stdout);
-	assert(0);
-	return 0;
+	src &= 0x1f;
+	uint32_t msk = mask(data_size);
+	uint32_t res = (((dest & msk) >> src) & msk) | ((~msk) & dest);
+	//cpu.eflags.OF is ignored.
+	alu_set_SF_ZF_PF(res, data_size);
+	cpu.eflags.CF = (data_size < src) ? 0 : !!(bitMask(src) & dest);
+	return res;
 #endif
 }
 
@@ -252,10 +264,22 @@ uint32_t alu_sar(uint32_t src, uint32_t dest, size_t data_size)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_sar(src, dest, data_size);
 #else
-	printf("\e[0;31mPlease implement me at alu.c\e[0m\n");
-	fflush(stdout);
-	assert(0);
-	return 0;
+	src &= 0x1f;
+	uint32_t msk = mask(data_size);
+	//uint32_t res = ((((dest & msk) >> src) & msk) | ((~msk) & dest)) | (signx(dest, data_size) == 0 ? 0 : (msk ^ (data_size < src ? 0 : mask(data_size - src))));
+	uint32_t res;
+	switch(data_size / 8)
+	{
+		case 1 : res = ((int32_t)(int8_t)dest) >> src; break;
+		case 2 : res = ((int32_t)(int16_t)dest) >> src; break;
+		case 4 : res = ((int32_t)dest) >> src; break;
+		default : assert(0);
+	}
+	res = (res & msk) | (dest & (~msk));
+	//cpu.eflags.OF is ignored.
+	alu_set_SF_ZF_PF(res, data_size);
+	cpu.eflags.CF = (data_size < src) ? signx(dest, data_size) : !!(bitMask(src) & dest);
+	return res;
 #endif
 }
 
@@ -264,9 +288,6 @@ uint32_t alu_sal(uint32_t src, uint32_t dest, size_t data_size)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_sal(src, dest, data_size);
 #else
-	printf("\e[0;31mPlease implement me at alu.c\e[0m\n");
-	fflush(stdout);
-	assert(0);
-	return 0;
+	return alu_shl(src, dest, data_size);
 #endif
 }
