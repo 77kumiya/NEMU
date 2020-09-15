@@ -236,10 +236,19 @@ uint32_t alu_shl(uint32_t src, uint32_t dest, size_t data_size)
 #else
 	src &= 0x1f;
 	uint32_t msk = mask(data_size);
-	uint32_t res = (((dest & msk) << src) & msk) | ((~msk) & dest);
+	uint32_t res;
+	switch(data_size / 8)
+	{
+		case 1 : res = ((uint32_t)(uint8_t)dest) << src; break;
+		case 2 : res = ((uint32_t)(uint16_t)dest) << src; break;
+		case 4 : res = ((uint32_t)dest) << src; break;
+		default : assert(0);
+	}
+	res = (res & msk) | (dest & (~msk));
+	//uint32_t res = (((dest & msk) << src) & msk) | ((~msk) & dest);
 	//cpu.eflags.OF is ignored.
 	alu_set_SF_ZF_PF(res, data_size);
-	cpu.eflags.CF = (data_size < src) ? 0 : !!(bitMask(data_size - src + 1) & dest);
+	cpu.eflags.CF = (data_size < src) ? 0 : signx(dest, data_size - src + 1); //!!(bitMask(data_size - src + 1) & dest);
 	return res;
 #endif
 }
