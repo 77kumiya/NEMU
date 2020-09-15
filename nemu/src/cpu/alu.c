@@ -121,10 +121,10 @@ uint64_t alu_mul(uint32_t src, uint32_t dest, size_t data_size)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_mul(src, dest, data_size);
 #else
-	printf("\e[0;31mPlease implement me at alu.c\e[0m\n");
-	fflush(stdout);
-	assert(0);
-	return 0;
+	uint64_t res = src * dest;
+	cpu.eflags.OF = !!((mask(data_size) ^ mask(data_size << 1)) & res);
+	cpu.eflags.CF = cpu.eflags.OF;
+	return res;
 #endif
 }
 
@@ -133,10 +133,8 @@ int64_t alu_imul(int32_t src, int32_t dest, size_t data_size)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_imul(src, dest, data_size);
 #else
-	printf("\e[0;31mPlease implement me at alu.c\e[0m\n");
-	fflush(stdout);
-	assert(0);
-	return 0;
+	//OF and CF are ignored.
+	return src * dest;
 #endif
 }
 
@@ -146,10 +144,7 @@ uint32_t alu_div(uint64_t src, uint64_t dest, size_t data_size)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_div(src, dest, data_size);
 #else
-	printf("\e[0;31mPlease implement me at alu.c\e[0m\n");
-	fflush(stdout);
-	assert(0);
-	return 0;
+	return dest / src;
 #endif
 }
 
@@ -159,10 +154,7 @@ int32_t alu_idiv(int64_t src, int64_t dest, size_t data_size)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_idiv(src, dest, data_size);
 #else
-	printf("\e[0;31mPlease implement me at alu.c\e[0m\n");
-	fflush(stdout);
-	assert(0);
-	return 0;
+	return dest / src;
 #endif
 }
 
@@ -171,10 +163,7 @@ uint32_t alu_mod(uint64_t src, uint64_t dest)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_mod(src, dest);
 #else
-	printf("\e[0;31mPlease implement me at alu.c\e[0m\n");
-	fflush(stdout);
-	assert(0);
-	return 0;
+	return dest % src;
 #endif
 }
 
@@ -183,10 +172,7 @@ int32_t alu_imod(int64_t src, int64_t dest)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_imod(src, dest);
 #else
-	printf("\e[0;31mPlease implement me at alu.c\e[0m\n");
-	fflush(stdout);
-	assert(0);
-	return 0;
+	return dest % src;
 #endif
 }
 
@@ -266,8 +252,9 @@ uint32_t alu_sar(uint32_t src, uint32_t dest, size_t data_size)
 #else
 	src &= 0x1f;
 	uint32_t msk = mask(data_size);
+#if 1
 	uint32_t res = (((dest & msk) >> src) & msk) | (signx(dest, data_size) == 0 ? 0 : (msk ^ (data_size < src ? 0 : mask(data_size - src))));
-#if 0
+#else
 	uint32_t res;
 	switch(data_size / 8)
 	{
