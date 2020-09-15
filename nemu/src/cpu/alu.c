@@ -5,6 +5,7 @@
 #define bitMask(size) (1u << ((size) - 1))	// return a integer whose size-th (1 indexed) lower bit is 1 and others are 0s.
 #define signx(x, size) (!!(bitMask(size) & (x)))	// return the sign bit of x, a integer of <size> bits length.
 #define mask(size) ((~0u) >> (32 - (size)))	//return a integer whose lower <size> bits are 1s and others are 0s.
+#define mask64(size) ((~(uint64_t)0) >> (64 - (size)))
 #define cutx(x, size) (mask(size) & (x))	// return the lower <size> bits of x.
 
 inline void alu_set_SF_ZF_PF(uint32_t res, size_t data_size)
@@ -121,8 +122,8 @@ uint64_t alu_mul(uint32_t src, uint32_t dest, size_t data_size)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_mul(src, dest, data_size);
 #else
-	uint64_t res = src * dest;
-	cpu.eflags.OF = !!((mask(data_size) ^ mask(data_size << 1)) & res);
+	uint64_t res = ((uint64_t)src) * ((uint64_t)dest);
+	cpu.eflags.OF = !!((mask64(data_size) ^ mask64(data_size << 1)) & res);
 	cpu.eflags.CF = cpu.eflags.OF;
 	return res;
 #endif
@@ -134,7 +135,7 @@ int64_t alu_imul(int32_t src, int32_t dest, size_t data_size)
 	return __ref_alu_imul(src, dest, data_size);
 #else
 	//OF and CF are ignored.
-	return src * dest;
+	return ((int64_t)src) * ((int64_t)dest);
 #endif
 }
 
@@ -252,11 +253,11 @@ uint32_t alu_sar(uint32_t src, uint32_t dest, size_t data_size)
 #else
 	src &= 0x1f;
 	uint32_t msk = mask(data_size);
-#if 1
+#if 0
 	uint32_t res = (((dest & msk) >> src) & msk) | (signx(dest, data_size) == 0 ? 0 : (msk ^ (data_size < src ? 0 : mask(data_size - src))));
 #else
 	uint32_t res;
-	switch(data_size / 8)
+	switch(data_size >> 3)
 	{
 		case 1 : res = ((int32_t)(int8_t)dest) >> src; break;
 		case 2 : res = ((int32_t)(int16_t)dest) >> src; break;
