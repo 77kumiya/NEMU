@@ -48,7 +48,7 @@ inline uint32_t internal_normalize(uint32_t sign, int32_t exp, uint64_t sig_grs)
 		if (exp < 0)
 		{
 			/* TODO: assign the number to zero */
-			exp == 0x0;
+			exp = 0x0;
 			sig_grs = 0x0;
 			overflow = true;
 		}
@@ -67,7 +67,7 @@ inline uint32_t internal_normalize(uint32_t sign, int32_t exp, uint64_t sig_grs)
 			// denormal
 			/* TODO: shift right, pay attention to sticky bit*/
 			uint32_t sticky = sig_grs & 0x1;
-			sig_grs >> 1;
+			sig_grs = sig_grs >> 1;
 			sig_grs |= sticky;
 		}
 	}
