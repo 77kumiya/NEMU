@@ -36,7 +36,7 @@ inline uint32_t internal_normalize(uint32_t sign, int32_t exp, uint64_t sig_grs)
 			sig_grs = 0x0;
 			overflow = true;
 		}
-		if (exp == 0)
+		else if (exp == 0)
 		{
 			// we have a denormal here, the exponent is 0, but means 2^-126,
 			// as a result, the significand should shift right once more
@@ -45,7 +45,7 @@ inline uint32_t internal_normalize(uint32_t sign, int32_t exp, uint64_t sig_grs)
 			sig_grs = sig_grs >> 1;
 			sig_grs |= sticky;
 		}
-		if (exp < 0)
+		else if (exp < 0)
 		{
 			/* TODO: assign the number to zero */
 			exp = 0x0;
@@ -295,12 +295,11 @@ uint32_t internal_float_mul(uint32_t b, uint32_t a)
 		fb.exponent++;
 
 	sig_res = sig_a * sig_b; // 24b * 24b
-	uint32_t exp_res = 0;
 
 	/* TODO: exp_res = ? leave space for GRS bits. */
-	printf("\e[0;31mPlease implement me at fpu.c\e[0m\n");
-	fflush(stdout);
-	assert(0);
+	uint32_t exp_res = fa.exponent + fb.exponent - 127;
+	sig_res = sig_res << (exp_res == 0 ? 2 : 3); // leave space for GRS bits.
+	
 	return internal_normalize(f.sign, exp_res, sig_res);
 }
 
