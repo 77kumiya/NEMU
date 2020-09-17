@@ -254,8 +254,6 @@ CORNER_CASE_RULE corner_mul[] = {
 	{N_INF_F, N_ZERO_F, N_NAN_F},
 };
 
-#define mask64(size) ((~(uint64_t)0) >> (64 - (size)))
-
 // a * b
 uint32_t internal_float_mul(uint32_t b, uint32_t a)
 {
@@ -301,9 +299,10 @@ uint32_t internal_float_mul(uint32_t b, uint32_t a)
     
 	/* TODO: exp_res = ? leave space for GRS bits. */
 	uint32_t exp_res = fa.exponent + fb.exponent - 150;
-	if(exp_res == 0)
+	if(exp_res == 0 && (sig_res >> 26) == 1)
 	{
 	    sig_res = sig_res >> 1;
+	    ++exp_res;
 	}
 	
 	return internal_normalize(f.sign, exp_res, sig_res);
