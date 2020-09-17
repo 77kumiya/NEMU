@@ -13,7 +13,8 @@ inline uint32_t internal_normalize(uint32_t sign, int32_t exp, uint64_t sig_grs)
 	bool overflow = false; // true if the result is INFINITY or 0 during normalize
 
 	if ((sig_grs >> (23 + 3)) > 1 || exp < 0)
-	{
+	{   
+	    uint32_t sticky = 0x0;
 		// normalize toward right
 		while ((((sig_grs >> (23 + 3)) > 1) && exp < 0xff) // condition 1
 			   ||										   // or
@@ -22,34 +23,33 @@ inline uint32_t internal_normalize(uint32_t sign, int32_t exp, uint64_t sig_grs)
 		{
 
 			/* TODO: shift right, pay attention to sticky bit*/
-			printf("\e[0;31mPlease implement me at fpu.c\e[0m\n");
-			fflush(stdout);
-			assert(0);
+			sticky |= sig_grs & 0x1;
+			sig_grs = sig_grs >> 1;
+			++exp;
 		}
+		sig_grs |= sticky;
 
 		if (exp >= 0xff)
 		{
 			/* TODO: assign the number to infinity */
-			printf("\e[0;31mPlease implement me at fpu.c\e[0m\n");
-			fflush(stdout);
-			assert(0);
+			exp = 0xff;
+			sig_grs = 0x0;
 			overflow = true;
 		}
-		if (exp == 0)
+		else if (exp == 0)
 		{
 			// we have a denormal here, the exponent is 0, but means 2^-126,
 			// as a result, the significand should shift right once more
 			/* TODO: shift right, pay attention to sticky bit*/
-			printf("\e[0;31mPlease implement me at fpu.c\e[0m\n");
-			fflush(stdout);
-			assert(0);
+			sticky = sig_grs & 0x1;
+			sig_grs = sig_grs >> 1;
+			sig_grs |= sticky;
 		}
-		if (exp < 0)
+		else if (exp < 0)
 		{
 			/* TODO: assign the number to zero */
-			printf("\e[0;31mPlease implement me at fpu.c\e[0m\n");
-			fflush(stdout);
-			assert(0);
+			exp = 0x0;
+			sig_grs = 0x0;
 			overflow = true;
 		}
 	}
@@ -59,33 +59,50 @@ inline uint32_t internal_normalize(uint32_t sign, int32_t exp, uint64_t sig_grs)
 		while (((sig_grs >> (23 + 3)) == 0) && exp > 0)
 		{
 			/* TODO: shift left */
-			printf("\e[0;31mPlease implement me at fpu.c\e[0m\n");
-			fflush(stdout);
-			assert(0);
+			sig_grs = sig_grs << 1;
+			--exp;
 		}
 		if (exp == 0)
 		{
 			// denormal
 			/* TODO: shift right, pay attention to sticky bit*/
-			printf("\e[0;31mPlease implement me at fpu.c\e[0m\n");
-			fflush(stdout);
-			assert(0);
+			uint32_t sticky = sig_grs & 0x1;
+			sig_grs = sig_grs >> 1;
+			sig_grs |= sticky;
 		}
 	}
 	else if (exp == 0 && sig_grs >> (23 + 3) == 1)
 	{
 		// two denormals result in a normal
-		exp++;
+		++exp;
 	}
 
 	if (!overflow)
 	{
 		/* TODO: round up and remove the GRS bits */
-		printf("\e[0;31mPlease implement me at fpu.c\e[0m\n");
-		fflush(stdout);
-		assert(0);
+		uint32_t grs = sig_grs & 0x7;
+		sig_grs = sig_grs >> 3;
+		if(grs > 4 || (grs == 4 && (sig_grs & 0x1) == 1))
+		{
+		    sig_grs += 1;
+		}
+		if((sig_grs >> 23) > 1 && exp < 0xff)
+		{
+		    sig_grs = sig_grs >> 1;
+		    ++exp;
+		}
+		if(exp >= 0xff)
+		{
+		    exp = 0xff;
+		    sig_grs = 0x0;
+		    overflow = true;
+		}
 	}
-
+    if(exp > 0 && exp < 0xff)
+    {
+        sig_grs &= (~(uint64_t)0) >> 41;
+    }
+    
 	FLOAT f;
 	f.sign = sign;
 	f.exponent = (uint32_t)(exp & 0xff);
@@ -143,7 +160,7 @@ uint32_t internal_float_add(uint32_t b, uint32_t a)
 	if (fa.exponent > fb.exponent)
 	{
 		fa.val = b;
-		fb.val = a;
+		fb.val = a; // fb is the float with greater exponent.
 	}
 
 	uint32_t sig_a, sig_b, sig_res;
@@ -155,13 +172,7 @@ uint32_t internal_float_add(uint32_t b, uint32_t a)
 		sig_b |= 0x800000; // the hidden 1
 
 	// alignment shift for fa
-	uint32_t shift = 0;
-
-	/* TODO: shift = ? */
-	printf("\e[0;31mPlease implement me at fpu.c\e[0m\n");
-	fflush(stdout);
-	assert(0);
-	assert(shift >= 0);
+	uint32_t shift = (fb.exponent == 0 ? fb.exponent + 1 : fb.exponent) - (fa.exponent == 0 ? fa.exponent + 1 : fa.exponent);
 
 	sig_a = (sig_a << 3); // guard, round, sticky
 	sig_b = (sig_b << 3);
@@ -171,9 +182,9 @@ uint32_t internal_float_add(uint32_t b, uint32_t a)
 	{
 		sticky = sticky | (sig_a & 0x1);
 		sig_a = sig_a >> 1;
-		sig_a |= sticky;
-		shift--;
+		--shift;
 	}
+	sig_a |= sticky;
 
 	// fraction add
 	if (fa.sign)
@@ -284,12 +295,16 @@ uint32_t internal_float_mul(uint32_t b, uint32_t a)
 		fb.exponent++;
 
 	sig_res = sig_a * sig_b; // 24b * 24b
-	uint32_t exp_res = 0;
-
+    sig_res = sig_res << 3; // leave space for GRS bits.
+    
 	/* TODO: exp_res = ? leave space for GRS bits. */
-	printf("\e[0;31mPlease implement me at fpu.c\e[0m\n");
-	fflush(stdout);
-	assert(0);
+	uint32_t exp_res = fa.exponent + fb.exponent - 150;
+	if(exp_res == 0 && (sig_res >> 26) == 1)
+	{
+	    sig_res = sig_res >> 1;
+	    ++exp_res;
+	}
+	
 	return internal_normalize(f.sign, exp_res, sig_res);
 }
 
