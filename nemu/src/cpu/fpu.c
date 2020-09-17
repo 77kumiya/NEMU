@@ -298,15 +298,12 @@ uint32_t internal_float_mul(uint32_t b, uint32_t a)
 
 	sig_res = sig_a * sig_b; // 24b * 24b
     sig_res = sig_res << 3;
-    uint32_t sticky = !!(sig_res & mask64(23));
-    sig_res = (sig_res >> 23) | sticky;
     
 	/* TODO: exp_res = ? leave space for GRS bits. */
-	uint32_t exp_res = fa.exponent + fb.exponent - 127;
+	uint32_t exp_res = fa.exponent + fb.exponent - 150;
 	if(exp_res == 0)
 	{
-	    sticky = sig_res & 0x1;
-	    sig_res = (sig_res >> 1) | sticky;
+	    sig_res = sig_res >> 1;
 	}
 	
 	return internal_normalize(f.sign, exp_res, sig_res);
