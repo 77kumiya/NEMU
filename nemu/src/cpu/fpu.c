@@ -297,7 +297,7 @@ uint32_t internal_float_mul(uint32_t b, uint32_t a)
 	sig_res = sig_a * sig_b; // 24b * 24b
 
 	/* TODO: exp_res = ? leave space for GRS bits. */
-	uint32_t exp_res = fa.exponent + fb.exponent - 127;
+	uint32_t exp_res = fa.exponent + fb.exponent - 150;
 	sig_res = sig_res << (exp_res == 0 ? 2 : 3); // leave space for GRS bits.
 	
 	return internal_normalize(f.sign, exp_res, sig_res);
