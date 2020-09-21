@@ -16,20 +16,21 @@ inline void alu_set_SF_ZF_PF(uint32_t res, size_t data_size)
 	uint8_t pf_t = 1;
 #if 1
 	pf_t ^= res & 1;
-	res = res >> 1;
+	res >>= 1;
 	pf_t ^= res & 1;
-	res = res >> 1;
+	res >>= 1;
 	pf_t ^= res & 1;
-	res = res >> 1;
+	res >>= 1;
 	pf_t ^= res & 1;
-	res = res >> 1;
+	res >>= 1;
 	pf_t ^= res & 1;
-	res = res >> 1;
+	res >>= 1;
 	pf_t ^= res & 1;
-	res = res >> 1;
+	res >>= 1;
 	pf_t ^= res & 1;
-	res = res >> 1;
+	res >>= 1;
 	pf_t ^= res & 1;
+	res >>= 1;
 #else
     // Another implementation
 	int i;
