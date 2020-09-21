@@ -44,11 +44,11 @@ int32_t alu_imod(int64_t src, int64_t dest);
 inline uint32_t sign_ext(uint32_t x, size_t data_size)
 {
         assert(data_size == 16 || data_size == 8 || data_size == 32);
-        switch (data_size)
+        switch (data_size >> 3)
         {
-        case 8:
+        case 1:
                 return (int32_t)((int8_t)(x & 0xff));
-        case 16:
+        case 2:
                 return (int32_t)((int16_t)(x & 0xffff));
         default:
                 return (int32_t)x;
@@ -58,11 +58,11 @@ inline uint32_t sign_ext(uint32_t x, size_t data_size)
 inline uint64_t sign_ext_64(uint32_t x, size_t data_size)
 {
         assert(data_size == 16 || data_size == 8 || data_size == 32);
-        switch (data_size)
+        switch (data_size >> 3)
         {
-        case 8:
+        case 1:
                 return (int64_t)((int8_t)(x & 0xff));
-        case 16:
+        case 2:
                 return (int64_t)((int16_t)(x & 0xffff));
         default:
                 return (int64_t)((int32_t)x);

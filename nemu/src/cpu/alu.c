@@ -150,7 +150,7 @@ uint64_t alu_mul(uint32_t src, uint32_t dest, size_t data_size)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_mul(src, dest, data_size);
 #else
-	uint64_t res = ((uint64_t)src) * ((uint64_t)dest);
+	uint64_t res = ((uint64_t)cutx(src, data_size)) * ((uint64_t)cutx(dest, data_size));
 	cpu.eflags.OF = !!((mask64(data_size) ^ mask64(data_size << 1)) & res);
 	cpu.eflags.CF = cpu.eflags.OF;
 	return res;
@@ -163,7 +163,7 @@ int64_t alu_imul(int32_t src, int32_t dest, size_t data_size)
 	return __ref_alu_imul(src, dest, data_size);
 #else
 	//OF and CF are ignored.
-	return ((int64_t)src) * ((int64_t)dest);
+	return sign_ext_64(src, data_size) * sign_ext_64(dest, data_size);
 #endif
 }
 
@@ -173,7 +173,7 @@ uint32_t alu_div(uint64_t src, uint64_t dest, size_t data_size)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_div(src, dest, data_size);
 #else
-	return dest / src;
+	return (mask64(data_size) & dest) / (mask64(data_size) & src);
 #endif
 }
 
@@ -183,7 +183,7 @@ int32_t alu_idiv(int64_t src, int64_t dest, size_t data_size)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_idiv(src, dest, data_size);
 #else
-	return dest / src;
+	return sign_ext_64(dest, data_size) / sign_ext_64(src, data_size);
 #endif
 }
 
@@ -192,7 +192,7 @@ uint32_t alu_mod(uint64_t src, uint64_t dest)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_mod(src, dest);
 #else
-	return dest % src;
+	return (mask64(data_size) & dest) % (mask64(data_size) & src);
 #endif
 }
 
@@ -201,7 +201,7 @@ int32_t alu_imod(int64_t src, int64_t dest)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_imod(src, dest);
 #else
-	return dest % src;
+	return sign_ext_64(dest, data_size) % sign_ext_64(src, data_size);
 #endif
 }
 
