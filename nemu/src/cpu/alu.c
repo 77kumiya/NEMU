@@ -44,7 +44,8 @@ inline void alu_set_SF_ZF_PF(uint32_t res, size_t data_size)
 
 inline void alu_set_ADD_OF(uint32_t res, uint32_t src, uint32_t dest, size_t data_size)
 {
-	cpu.eflags.OF = signx(src, data_size) == signx(dest, data_size) && signx(res, data_size) != signx(src, data_size);
+    src = signx(src, data_size);
+	cpu.eflags.OF = src == signx(dest, data_size) && signx(res, data_size) != src;
 }
 
 inline void alu_set_ADD_CF(uint32_t res, uint32_t src, size_t data_size)
@@ -54,17 +55,21 @@ inline void alu_set_ADD_CF(uint32_t res, uint32_t src, size_t data_size)
 
 inline void alu_set_ADC_OF(uint32_t res, uint32_t src, uint32_t dest, size_t data_size)
 {
-	cpu.eflags.OF = signx(src, data_size) == signx(dest, data_size) && signx(res, data_size) != signx(src, data_size);
+    src = signx(src, data_size);
+	cpu.eflags.OF = src == signx(dest, data_size) && signx(res, data_size) != src;
 }
 
 inline void alu_set_ADC_CF(uint32_t res, uint32_t src, size_t data_size)
 {
-	cpu.eflags.CF = cutx(res, data_size) < cutx(src, data_size) || (cutx(res, data_size) == cutx(src, data_size) && cpu.eflags.CF == 1);
+    src = cutx(src, data_size);
+    res = cutx(res, data_size);
+	cpu.eflags.CF = res < src || (res == src && cpu.eflags.CF == 1);
 }
 
 inline void alu_set_SUB_OF(uint32_t res, uint32_t src, uint32_t dest, size_t data_size)
 {
-	cpu.eflags.OF = signx(src, data_size) != signx(dest, data_size) && signx(res, data_size) != signx(dest, data_size);
+    dest = signx(dest, data_size);
+	cpu.eflags.OF = signx(src, data_size) != dest && signx(res, data_size) != dest;
 }
 
 inline void alu_set_SUB_CF(uint32_t src, uint32_t dest, size_t data_size)
@@ -74,12 +79,15 @@ inline void alu_set_SUB_CF(uint32_t src, uint32_t dest, size_t data_size)
 
 inline void alu_set_SBB_OF(uint32_t res, uint32_t src, uint32_t dest, size_t data_size)
 {
-	cpu.eflags.OF = signx(src, data_size) != signx(dest, data_size) && signx(res, data_size) != signx(dest, data_size);
+    dest = signx(dest, data_size);
+	cpu.eflags.OF = signx(src, data_size) != dest && signx(res, data_size) != dest;
 }
 
 inline void alu_set_SBB_CF(uint32_t src, uint32_t dest, size_t data_size)
 {
-	cpu.eflags.CF = cutx(dest, data_size) < cutx(src, data_size) || (cutx(dest, data_size) == cutx(src, data_size) && cpu.eflags.CF == 1);
+    src = cutx(src, data_size);
+    dest = cutx(dest, data_size);
+	cpu.eflags.CF = dest < src || (dest == src && cpu.eflags.CF == 1);
 }
 
 #endif
