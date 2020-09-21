@@ -260,9 +260,9 @@ uint32_t alu_sar(uint32_t src, uint32_t dest, size_t data_size)
 	uint32_t res;
 	switch(data_size >> 3)
 	{
-		case 1 : res = ((int32_t)(int8_t)dest) >> src; break;
-		case 2 : res = ((int32_t)(int16_t)dest) >> src; break;
-		case 4 : res = ((int32_t)dest) >> src; break;
+		case 1 : res = ((int32_t)(int8_t)dest) >> (int32_t)src; break;
+		case 2 : res = ((int32_t)(int16_t)dest) >> (int32_t)src; break;
+		case 4 : res = ((int32_t)dest) >> (int32_t)src; break;
 		default : assert(0);
 	}
 	res &= msk;
