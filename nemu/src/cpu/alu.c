@@ -4,8 +4,8 @@
 
 #define bitMask(size) (1u << ((size) - 1))	// return a integer whose size-th (1 indexed) lower bit is 1 and others are 0s.
 #define signx(x, size) (!!(bitMask(size) & (x)))	// return the sign bit of x, a integer of <size> bits length.
-#define mask(size) ((~0u) >> (32 - (size)))	//return a integer whose lower <size> bits are 1s and others are 0s.
-#define mask64(size) ((~(uint64_t)0) >> (64 - (size)))
+#define mask(size) ((0xffffffffu) >> (32 - (size)))	//return a integer whose lower <size> bits are 1s and others are 0s.
+#define mask64(size) ((0xffffffffffffffffu) >> (64 - (size)))
 #define cutx(x, size) (mask(size) & (x))	// return the lower <size> bits of x.
 
 inline void alu_set_SF_ZF_PF(uint32_t res, size_t data_size)
@@ -14,12 +14,31 @@ inline void alu_set_SF_ZF_PF(uint32_t res, size_t data_size)
 	cpu.eflags.ZF = cutx(res, data_size) == 0;
 	
 	uint8_t pf_t = 1;
+#if 1
+	pf_t ^= res & 1;
+	res = res >> 1;
+	pf_t ^= res & 1;
+	res = res >> 1;
+	pf_t ^= res & 1;
+	res = res >> 1;
+	pf_t ^= res & 1;
+	res = res >> 1;
+	pf_t ^= res & 1;
+	res = res >> 1;
+	pf_t ^= res & 1;
+	res = res >> 1;
+	pf_t ^= res & 1;
+	res = res >> 1;
+	pf_t ^= res & 1;
+#else
+    // Another implementation
 	int i;
 	for(i=0; i<8; ++i)
 	{
 		pf_t ^= res & 1;
 		res = res >> 1;
 	}
+#endif
 	cpu.eflags.PF = pf_t;
 }
 
