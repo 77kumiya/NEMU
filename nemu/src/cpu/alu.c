@@ -150,8 +150,9 @@ uint64_t alu_mul(uint32_t src, uint32_t dest, size_t data_size)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_mul(src, dest, data_size);
 #else
-	uint64_t res = ((uint64_t)cutx(src, data_size)) * ((uint64_t)cutx(dest, data_size));
-	cpu.eflags.OF = !!((mask64(data_size) ^ mask64(data_size << 1)) & res);
+    uint64_t msk64 = mask64(data_size);
+	uint64_t res = (msk64 & dest) * (msk64 & src);
+	cpu.eflags.OF = !!((msk64 ^ mask64(data_size << 1)) & res);
 	cpu.eflags.CF = cpu.eflags.OF;
 	return res;
 #endif
@@ -183,6 +184,7 @@ int32_t alu_idiv(int64_t src, int64_t dest, size_t data_size)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_idiv(src, dest, data_size);
 #else
+    // there may be bugs when high <64-data_size> bits of inputs are not all sign bit!!!
 	return dest / src;
 #endif
 }
