@@ -7,10 +7,10 @@ make_instr_func(call)
 {
         OPERAND rel, dest;
         
-        cpu.esp -= data_size / 8;
+        cpu.esp -= 4;
         dest.type = OPR_MEM;
         dest.sreg = SREG_SS;
-        dest.data_size = data_size;
+        dest.data_size = 32;
         dest.addr = cpu.esp;
         dest.val = eip + 1 + data_size / 8;
         operand_write(&dest);
