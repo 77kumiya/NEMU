@@ -14,3 +14,4 @@ static void instr_execute_1op()
 
 make_instr_impl_1op(inc, rm, v)
 make_instr_impl_1op(inc, rm, b)
+make_instr_impl_1op(inc, r, v)
