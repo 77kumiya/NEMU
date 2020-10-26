@@ -15,7 +15,7 @@ make_instr_func(lea)
 		opr_dest.data_size = data_size;
 		decode_operand_rm2r
 		
-		print_asm_2(lea, "", len, &opr_src, &opr_dest);
+		print_asm_2("lea", "", len, &opr_src, &opr_dest);
 		
 		instr_execute_2op();
 		return len; 
