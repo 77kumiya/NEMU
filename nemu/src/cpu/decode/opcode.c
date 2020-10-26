@@ -1,8 +1,8 @@
 #include "cpu/instr.h"
 
 instr_func opcode_entry[256] = {
-    /* 0x00 - 0x03*/ inv, inv, inv, inv,
-    /* 0x04 - 0x07*/ inv, inv, inv, inv,
+    /* 0x00 - 0x03*/ add_r2rm_b, add_r2rm_v, add_rm2r_b, add_rm2r_v,
+    /* 0x04 - 0x07*/ add_i2a_b, add_i2a_v, inv, inv,
     /* 0x08 - 0x0b*/ inv, inv, inv, inv,
     /* 0x0c - 0x0f*/ inv, inv, inv, opcode_2_byte,
     /* 0x10 - 0x13*/ inv, inv, inv, inv,
@@ -69,7 +69,7 @@ instr_func opcode_entry[256] = {
 
 /* 0x80 */
 instr_func group_1_b_entry[8] =
-    {inv, inv, inv, inv, and_i2rm_b, inv, inv, inv};
+    {add_i2rm_b, inv, inv, inv, and_i2rm_b, inv, inv, inv};
 
 /* 0x81 */
 instr_func group_1_v_entry[8] =
@@ -77,7 +77,7 @@ instr_func group_1_v_entry[8] =
 
 /* 0x83 */
 instr_func group_1_bv_entry[8] =
-    {inv, inv, inv, inv, and_i2rm_bv, sub_i2rm_bv, inv, cmp_i2rm_bv};
+    {add_i2rm_bv, inv, inv, inv, and_i2rm_bv, sub_i2rm_bv, inv, cmp_i2rm_bv};
 
 /* 0xc0 */
 instr_func group_2_b_entry[8] =
@@ -183,10 +183,10 @@ instr_func opcode_2_byte_entry[256] = {
     /* 0x74 - 0x77*/ inv, inv, inv, inv,
     /* 0x78 - 0x7b*/ inv, inv, inv, inv,
     /* 0x7c - 0x7f*/ inv, inv, inv, inv,
-    /* 0x80 - 0x83*/ inv, inv, inv, inv,
-    /* 0x84 - 0x87*/ inv, inv, jbe_near, inv,
-    /* 0x88 - 0x8b*/ inv, inv, inv, inv,
-    /* 0x8c - 0x8f*/ inv, inv, inv, inv,
+    /* 0x80 - 0x83*/ jo_near, jno_near, jb_near, jae_near,
+    /* 0x84 - 0x87*/ je_near, jne_near, jbe_near, ja_near,
+    /* 0x88 - 0x8b*/ js_near, jns_near, jp_near, jnp_near,
+    /* 0x8c - 0x8f*/ jl_near, jge_near, jle_near, jg_near,
     /* 0x90 - 0x93*/ inv, inv, inv, inv,
     /* 0x94 - 0x97*/ inv, inv, inv, inv,
     /* 0x98 - 0x9b*/ inv, inv, inv, inv,
