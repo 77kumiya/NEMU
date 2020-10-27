@@ -98,6 +98,8 @@ uint32_t alu_add(uint32_t src, uint32_t dest, size_t data_size)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_add(src, dest, data_size);
 #else
+    src = cutx(src, data_size);
+    dest = cutx(dest, data_size);
 	uint32_t res = src + dest;
 	alu_set_ADD_OF(res, src, dest, data_size);
 	alu_set_SF_ZF_PF(res, data_size);
@@ -111,6 +113,8 @@ uint32_t alu_adc(uint32_t src, uint32_t dest, size_t data_size)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_adc(src, dest, data_size);
 #else
+    src = cutx(src, data_size);
+    dest = cutx(dest, data_size);
 	uint32_t res = src + dest + cpu.eflags.CF;
 	alu_set_ADC_OF(res, src, dest, data_size);
 	alu_set_SF_ZF_PF(res, data_size);
@@ -124,6 +128,8 @@ uint32_t alu_sub(uint32_t src, uint32_t dest, size_t data_size)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_sub(src, dest, data_size);
 #else
+    src = cutx(src, data_size);
+    dest = cutx(dest, data_size);
 	uint32_t res = dest - src;
 	alu_set_SUB_OF(res, src, dest, data_size);
 	alu_set_SF_ZF_PF(res, data_size);
@@ -137,6 +143,8 @@ uint32_t alu_sbb(uint32_t src, uint32_t dest, size_t data_size)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_sbb(src, dest, data_size);
 #else
+    src = cutx(src, data_size);
+    dest = cutx(dest, data_size);
 	uint32_t res = dest - src - cpu.eflags.CF;
 	alu_set_SBB_OF(res, src, dest, data_size);
 	alu_set_SF_ZF_PF(res, data_size);
