@@ -3,5 +3,6 @@
 
 make_instr_func(jmp_near);
 make_instr_func(jmp_short);
+make_instr_func(jmp_rm_v);
 
 #endif
