@@ -5,5 +5,5 @@ Put the declarations of `call' instructions here.
 */
 
 make_instr_func(call);
-
+make_instr_func(call_rm_v);
 #endif
