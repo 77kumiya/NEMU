@@ -27,3 +27,24 @@ make_instr_func(call)
         
         return 1 + data_size / 8;
 }
+
+
+make_instr_func(call_rm_v)
+{   
+    int len = 1;
+    decode_data_size_v
+    decode_operand_rm
+    operand_read(&opr_src);
+    
+    cpu.esp -= 4;
+    opr_dest.type = OPR_MEM;
+    opr_dest.sreg = SREG_SS;
+    opr_dest.addr = cpu.esp;
+    opr_dest.val = eip + len;
+    operand_write(&opr_dest);
+    
+    print_asm_1("call", "", len, &opr_src);
+    
+    cpu.eip = opr_src.val;
+    return 0;
+}
