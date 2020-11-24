@@ -36,7 +36,7 @@ uint32_t loader()
 	{
 		if (ph->p_type == PT_LOAD)
 		{
-            memcpy(ph->p_vaddr, (void *)elf + ph->p_offset, ph->p_filesz);
+            memcpy((void *)ph->p_vaddr, (void *)elf + ph->p_offset, ph->p_filesz);
             memset((void *)(ph->p_vaddr) + ph->p_filesz, 0, ph->p_memsz - ph->p_filesz);
 
 #ifdef IA32_PAGE
