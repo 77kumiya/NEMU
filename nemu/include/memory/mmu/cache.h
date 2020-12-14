@@ -5,6 +5,12 @@
 
 #ifdef CACHE_ENABLED
 
+struct CacheLine{
+    bool valid;
+    uint32_t label;
+    uint8_t data[64];
+};
+
 // init the cache
 void init_cache();
 
