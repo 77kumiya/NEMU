@@ -1,6 +1,7 @@
 #include "memory/mmu/cache.h"
 #define CACHE_LINE_NUM 1024
 
+extern hw_mem;
 struct CacheLine cache[CACHE_LINE_NUM];
 
 static inline uint32_t get_inblock_addr(paddr_t paddr);
@@ -8,7 +9,7 @@ static inline uint32_t get_group_num(paddr_t paddr);
 static inline uint32_t get_label(paddr_t paddr);
 static inline void parse_paddr(uint32_t *p_label, uint32_t *p_group_num, uint32_t *p_inblock_addr);
 static uint32_t cross_line_read(paddr_t paddr, size_t len, uint32_t inblock_addr);
-static uint32_t search_in_group(uint32_t group_num);
+static uint32_t search_in_group(uint32_t group_num, uint32_t label);
 static uint32_t choose_slot(uint32_t group_num);
 static void load_data_from_memory(uint32_t label, uint32_t group_num);
 static void cross_line_write(paddr_t paddr, size_t len, uint32_t inblock_addr, uint32_t data);
@@ -28,7 +29,7 @@ void cache_write(paddr_t paddr, size_t len, uint32_t data)
 {
 	// parse paddr to get label, group number and in-block address
     uint32_t label, group_num, inblock_addr;
-	parse_paddr(&label, &group_num, &inblock_addr);
+	parse_paddr(paddr, &label, &group_num, &inblock_addr);
 	// handle situations when data cross line
 	if(inblock_addr + len > 64)
 	{
@@ -36,7 +37,7 @@ void cache_write(paddr_t paddr, size_t len, uint32_t data)
 	    return;
 	}
 	// search in group
-	uint32_t i = search_in_group(group_num);
+	uint32_t i = search_in_group(group_num, label);
 	// if cache hit, write on cache
 	if(i < group_num * 8 + 8){
 	    memcpy(cache[i].data + inblock_addr, &data, len);
@@ -50,14 +51,14 @@ uint32_t cache_read(paddr_t paddr, size_t len)
 {
     // parse paddr to get label, group number and in-block address
     uint32_t label, group_num, inblock_addr;
-	parse_paddr(&label, &group_num, &inblock_addr);
+	parse_paddr(paddr, &label, &group_num, &inblock_addr);
 	// handle situations when data cross line
 	if(inblock_addr + len > 64)
 	{
 	    return cross_line_read(paddr, len, inblock_addr);
 	}
 	// search in group
-	uint32_t i = search_in_group(group_num);
+	uint32_t i = search_in_group(group_num, label);
 	// if cache miss, load data from memory
 	if(i == group_num * 8 + 8){
 	    load_data_from_memory(label, group_num);
@@ -87,7 +88,7 @@ static inline uint32_t get_label(paddr_t paddr)
     return 0xffffe000 & paddr;
 }
 
-static inline void parse_paddr(uint32_t *p_label, uint32_t *p_group_num, uint32_t *p_inblock_addr)
+static inline void parse_paddr(paddr_t paddr, uint32_t *p_label, uint32_t *p_group_num, uint32_t *p_inblock_addr)
 {
     *p_label = get_label(paddr);
 	*p_group_num = get_group_num(paddr);
@@ -103,7 +104,7 @@ static uint32_t cross_line_read(paddr_t paddr, size_t len, uint32_t inblock_addr
 	return (data2 << (len1 * 8)) | data1;
 }
 
-static uint32_t search_in_group(uint32_t group_num)
+static uint32_t search_in_group(uint32_t group_num, uint32_t label)
 {
     uint32_t group_start = group_num * 8;
 	uint32_t group_end = group_start + 8;
