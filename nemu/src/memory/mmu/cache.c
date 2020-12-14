@@ -7,7 +7,7 @@ struct CacheLine cache[CACHE_LINE_NUM];
 static inline uint32_t get_inblock_addr(paddr_t paddr);
 static inline uint32_t get_group_num(paddr_t paddr);
 static inline uint32_t get_label(paddr_t paddr);
-static inline void parse_paddr(uint32_t *p_label, uint32_t *p_group_num, uint32_t *p_inblock_addr);
+static inline void parse_paddr(paddr_t paddr, uint32_t *p_label, uint32_t *p_group_num, uint32_t *p_inblock_addr);
 static uint32_t cross_line_read(paddr_t paddr, size_t len, uint32_t inblock_addr);
 static uint32_t search_in_group(uint32_t group_num, uint32_t label);
 static uint32_t choose_slot(uint32_t group_num);
