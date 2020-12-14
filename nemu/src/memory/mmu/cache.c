@@ -1,7 +1,7 @@
 #include "memory/mmu/cache.h"
 #define CACHE_LINE_NUM 1024
 
-CacheLine cache[CACHE_LINE_NUM];
+struct CacheLine cache[CACHE_LINE_NUM];
 
 static inline uint32_t get_inblock_addr(paddr_t paddr);
 static inline uint32_t get_group_num(paddr_t paddr);
