@@ -4,6 +4,6 @@
 Put the declarations of `lgdt' instructions here.
 */
 
-make_instr_func(lgdt);
+make_instr_func(lgdt_rm_v);
 
 #endif
