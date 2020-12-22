@@ -14,6 +14,7 @@ void load_sreg(uint8_t sreg)
 	 * The visible part of 'sreg' should be assigned by mov or ljmp already.
 	 */
 	uint32_t desc_linear_addr = cpu.gdtr.base + (sreg << 3);
+	printf("%x", cpu.gdtr.base)
 	SegDesc sreg_desc;
     sreg_desc.val[0] = laddr_read(desc_linear_addr, 4);
     sreg_desc.val[1] = laddr_read(desc_linear_addr + 4, 4);
