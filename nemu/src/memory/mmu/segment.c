@@ -4,6 +4,7 @@
 // return the linear address from the virtual address and segment selector
 uint32_t segment_translate(uint32_t offset, uint8_t sreg)
 {
+    assert(cpu.segReg[sreg].base == 0x0);
 	return offset + cpu.segReg[sreg].base;
 }
 
@@ -15,6 +16,7 @@ void load_sreg(uint8_t sreg)
 	 */
 	uint32_t desc_linear_addr = cpu.gdtr.base + (sreg << 3);
 	printf("%02x", cpu.gdtr.base);
+	fflush(stdout);
 	SegDesc sreg_desc;
     sreg_desc.val[0] = laddr_read(desc_linear_addr, 4);
     sreg_desc.val[1] = laddr_read(desc_linear_addr + 4, 4);
