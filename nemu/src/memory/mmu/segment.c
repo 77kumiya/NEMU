@@ -13,8 +13,8 @@ void load_sreg(uint8_t sreg)
 	/* TODO: load the invisibile part of the segment register 'sreg' by reading the GDT.
 	 * The visible part of 'sreg' should be assigned by mov or ljmp already.
 	 */
-	assert(sreg == 1);
 	uint32_t desc_linear_addr = cpu.gdtr.base + (sreg << 3);
+	assert(desc_linear_addr == 0x0003003c);
 	SegDesc sreg_desc;
     sreg_desc.val[0] = laddr_read(desc_linear_addr, 4);
     sreg_desc.val[1] = laddr_read(desc_linear_addr + 4, 4);
