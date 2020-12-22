@@ -25,6 +25,6 @@ void load_sreg(uint8_t sreg)
     printf("%x", cpu.segReg[sreg].base);
     printf("%x", cpu.segReg[sreg].limit);
     printf("%x", sreg_desc.granularity);
-    fflush();
+    fflush(stdout);
     assert(cpu.segReg[sreg].base == 0x0 && cpu.segReg[sreg].limit == 0x000fffff && sreg_desc.granularity == 1);
 }
