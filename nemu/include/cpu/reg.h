@@ -57,8 +57,8 @@ typedef struct
 #ifdef IA32_SEG
     // GDTR, todo: define type GDTR
 	typedef struct {
-	    uint16_t limit;
-	    uint32_t base;
+	    uint32_t limit : 16;
+	    uint32_t base : 32;
     }GDTR;
     
     // segment registers, todo: define type SegReg
