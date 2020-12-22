@@ -18,6 +18,7 @@ void load_sreg(uint8_t sreg)
 	SegDesc sreg_desc;
     sreg_desc.val[0] = laddr_read(desc_linear_addr, 4);
     sreg_desc.val[1] = laddr_read(desc_linear_addr + 4, 4);
+    print("\n%d\n", sreg);
     printf("\n\n\n%02x\n\n\n", sreg_desc.limit_15_0);
 	fflush(stdout);
     assert(sreg_desc.limit_15_0 == 0xffff);
