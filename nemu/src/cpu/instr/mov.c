@@ -87,3 +87,23 @@ make_instr_func(mov_rm2sreg_w){
     load_sreg(opr_dest.addr);
     return len;
 }
+
+make_instr_func(mov_cr2r_l){
+    int len = 1;
+    decode_data_size_l
+    decode_operand_r2rm
+    opr_src.type = OPR_CREG;
+    print_asm_2("mov", "l", len, &opr_src, &opr_dest);
+    instr_execute_2op();
+    return len;
+}
+
+make_instr_func(mov_r2cr_l){
+    int len = 1;
+    decode_data_size_l
+    decode_operand_rm2r
+    opr_dest.type = OPR_CREG;
+    print_asm_2("mov", "l", len, &opr_src, &opr_dest);
+    instr_execute_2op();
+    return len;
+}
