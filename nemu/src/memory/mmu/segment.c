@@ -24,5 +24,5 @@ void load_sreg(uint8_t sreg)
     cpu.segReg[sreg].soft_use = sreg_desc.soft_use;
     printf("hello");
     fflush(stdout);
-    assert(cpu.segReg[sreg].base == 0x0 && cpu.segReg[sreg].limit == 0x000fffff && sreg_desc.granularity == 1);
+    //assert(cpu.segReg[sreg].base == 0x0 && cpu.segReg[sreg].limit == 0x000fffff && sreg_desc.granularity == 1);
 }
