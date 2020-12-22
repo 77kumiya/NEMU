@@ -1,4 +1,6 @@
 #include "memory/mmu/cache.h"
+#ifdef CACHE_ENABLED
+
 #define CACHE_LINE_NUM 1024
 
 extern uint8_t hw_mem[];
@@ -154,3 +156,5 @@ static void cross_line_write(paddr_t paddr, size_t len, uint32_t inblock_addr, u
 	cache_write(paddr, len1, data1);
 	cache_write(paddr + len1, len2, data2);
 }
+
+#endif
