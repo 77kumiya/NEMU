@@ -22,6 +22,8 @@ void load_sreg(uint8_t sreg)
     cpu.segReg[sreg].type = sreg_desc.type;
     cpu.segReg[sreg].privilege_level = sreg_desc.privilege_level;
     cpu.segReg[sreg].soft_use = sreg_desc.soft_use;
-    printf("%u", cpu.segReg[sreg].base);
+    printf("%x", cpu.segReg[sreg].base);
+    printf("%x", cpu.segReg[sreg].limit);
+    printf("%x", sreg_desc.granularity);
     assert(cpu.segReg[sreg].base == 0x0 && cpu.segReg[sreg].limit == 0x000fffff && sreg_desc.granularity == 1);
 }
