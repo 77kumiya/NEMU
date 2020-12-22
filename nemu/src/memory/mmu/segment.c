@@ -14,16 +14,14 @@ void load_sreg(uint8_t sreg)
 	 * The visible part of 'sreg' should be assigned by mov or ljmp already.
 	 */
 	uint32_t desc_linear_addr = cpu.gdtr.base + (sreg << 3);
-	assert(cpu.gdtr.base == 0x00030034);
 	SegDesc sreg_desc;
     sreg_desc.val[0] = laddr_read(desc_linear_addr, 4);
     sreg_desc.val[1] = laddr_read(desc_linear_addr + 4, 4);
+    assert(sreg_desc.limit_15_0 == 0xffff && sreg_desc.base_15_0 == 0x0000);
     cpu.segReg[sreg].base = (sreg_desc.base_31_24 << 24) + (sreg_desc.base_23_16 << 16) + (sreg_desc.base_15_0);
     cpu.segReg[sreg].limit = (sreg_desc.limit_19_16 << 16) + (sreg_desc.limit_15_0);
     cpu.segReg[sreg].type = sreg_desc.type;
     cpu.segReg[sreg].privilege_level = sreg_desc.privilege_level;
     cpu.segReg[sreg].soft_use = sreg_desc.soft_use;
-    printf("hello");
-    fflush(stdout);
     assert(cpu.segReg[sreg].base == 0x0 && cpu.segReg[sreg].limit == 0x000fffff && sreg_desc.granularity == 1);
 }
