@@ -55,8 +55,49 @@ typedef struct
 	} eflags;
 
 #ifdef IA32_SEG
-	GDTR gdtr; // GDTR, todo: define type GDTR
-	// segment registers, todo: define type SegReg
+    // GDTR, todo: define type GDTR
+	typedef struct {
+	    uint32_t limit : 16;
+	    uint32_t base : 32;
+    }GDTR;
+    
+    // segment registers, todo: define type SegReg
+	typedef struct {
+	    // the 16-bit visible part, i.e., the selector
+	    union {
+		    uint16_t val;
+		    struct {
+			    uint32_t rpl : 2;
+			    uint32_t ti : 1;
+			    uint32_t index : 13;
+		    };
+	    };
+
+	    // the invisible part, i.e., cache part
+	    struct {
+		    uint32_t base;
+		    uint32_t limit;
+		    uint32_t type : 5;
+		    uint32_t privilege_level : 2;
+		    uint32_t soft_use : 1;
+	    };
+    }SegReg;
+    
+    // control registers, todo: define type CR0
+	typedef union {
+	    struct {
+		    uint32_t pe : 1;
+		    uint32_t mp : 1;
+		    uint32_t em : 1;
+		    uint32_t ts : 1;
+		    uint32_t et : 1;
+		    uint32_t reserve : 26;
+		    uint32_t pg : 1;
+	    };
+	    uint32_t val; 	
+    }CR0;
+    
+	GDTR gdtr;
 	union {
 		SegReg segReg[6];
 		struct
@@ -64,7 +105,6 @@ typedef struct
 			SegReg es, cs, ss, ds, fs, gs;
 		};
 	};
-	// control registers, todo: define type CR0
 	CR0 cr0;
 #else
 	uint8_t dummy_seg[142]; // make __ref_ instructions safe to use

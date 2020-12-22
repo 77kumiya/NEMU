@@ -161,6 +161,13 @@ void print_asm_3(char *instr, char *suffix, uint8_t len, OPERAND *opr_1, OPERAND
 	opr_src.addr = REG_AL;                      \
 	len += 4;
 
+#define decode_operand_m                      \
+	opr_src.type = OPR_MEM;                   \
+	opr_src.sreg = SREG_DS;                   \
+	opr_src.addr = instr_fetch(eip + 1, opr_src.data_size >> 3);   \
+	len += opr_src.data_size >> 3;
+
+	
 // conditions
 // possible condition: e, a, ae, b, be, o, p, s , ne, na, no, np, ns, g, ge, l, le, ecxz
 
