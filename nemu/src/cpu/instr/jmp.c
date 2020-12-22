@@ -52,3 +52,18 @@ make_instr_func(jmp_rm_v)
 
         return 0;
 }
+
+make_instr_func(ljmp)
+{
+        int len = 1;
+        decode_data_size_v
+        
+
+        operand_read(&opr_src);
+        
+        print_asm_1("jmp", "", len, &opr_src);
+
+        cpu.eip = opr_src.val;
+
+        return 0;
+}
