@@ -42,12 +42,39 @@ void paddr_write(paddr_t paddr, size_t len, uint32_t data)
 
 uint32_t laddr_read(laddr_t laddr, size_t len)
 {
-	return paddr_read(laddr, len);
+    assert(len == 1 || len == 2 || len == 4);
+    if(cpu.cr0.paging == 1){
+        size_t len_left = 0x1000 - (0xfff & laddr);
+        if(len_left < len){
+            uint32_t data1 = paddr_read(page_translate(laddr), len_left);
+            uint32_t data2 = paddr_read(page_translate(laddr + len_left), len - len_left);
+            return ((~(0xffffffff << (len_left << 3))) & data1) | (data2 << (len_left << 3));
+        }else{
+            paddr_t paddr = page_translate(laddr);
+            return paddr_read(paddr, len);
+        }
+    }else{
+        return paddr_read(laddr, len);
+    }
 }
 
 void laddr_write(laddr_t laddr, size_t len, uint32_t data)
 {
-	paddr_write(laddr, len, data);
+    assert(len == 1 || len == 2 || len == 4);
+    if(cpu.cr0.paging == 1){
+        size_t len_left = 0x1000 - (0xfff & laddr);
+        if(len_left < len){
+            uint32_t data1 = (~(0xffffffff << (len_left << 3))) & data;
+            uint32_t data2 = data >> (len_left << 3);
+            paddr_write(page_translate(laddr), len_left, data1);
+            paddr_write(page_translate(laddr + len_left), len - len_left, data2);
+        }else{
+            paddr_t paddr = page_translate(laddr);
+            paddr_write(paddr, len, data);
+        }
+    }else{
+        paddr_write(laddr, len, data);
+    }
 }
 
 uint32_t vaddr_read(vaddr_t vaddr, uint8_t sreg, size_t len)

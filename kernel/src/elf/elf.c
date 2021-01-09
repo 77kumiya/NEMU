@@ -36,8 +36,14 @@ uint32_t loader()
 	{
 		if (ph->p_type == PT_LOAD)
 		{
+#ifdef IA32_PAGE
+		    void *seg_paddr_base = (void *)mm_malloc(ph->p_vaddr, ph->p_memsz);
+		    memcpy(seg_paddr_base, (void *)elf + ph->p_offset, ph->p_filesz);
+            memset(seg_paddr_base + ph->p_filesz, 0, ph->p_memsz - ph->p_filesz);
+#else
             memcpy((void *)ph->p_vaddr, (void *)elf + ph->p_offset, ph->p_filesz);
             memset((void *)(ph->p_vaddr) + ph->p_filesz, 0, ph->p_memsz - ph->p_filesz);
+#endif
 
 #ifdef IA32_PAGE
 			/* Record the program break for future use */
