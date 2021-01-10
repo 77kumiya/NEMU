@@ -40,6 +40,8 @@ uint32_t loader()
 		    void *seg_paddr_base = (void *)mm_malloc(ph->p_vaddr, ph->p_memsz);
 		    memcpy(seg_paddr_base, (void *)elf + ph->p_offset, ph->p_filesz);
             memset(seg_paddr_base + ph->p_filesz, 0, ph->p_memsz - ph->p_filesz);
+            Log("0x%x", ph->p_vaddr);
+            Log("0x%x", seg_paddr_base);
 #else
             memcpy((void *)ph->p_vaddr, (void *)elf + ph->p_offset, ph->p_filesz);
             memset((void *)(ph->p_vaddr) + ph->p_filesz, 0, ph->p_memsz - ph->p_filesz);
