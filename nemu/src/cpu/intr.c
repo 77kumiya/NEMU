@@ -16,6 +16,7 @@ static void push(uint32_t data, uint32_t size){
 void raise_intr(uint8_t intr_no)
 {
 #ifdef IA32_INTR
+	assert(0);
 	// push eflags, cs and eip onto stack
         push(cpu.eflags.val, 32);
 	push(cpu.cs.val, 32);
