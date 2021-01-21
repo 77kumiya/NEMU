@@ -16,7 +16,6 @@ static void push(uint32_t data, uint32_t size){
 void raise_intr(uint8_t intr_no)
 {
 #ifdef IA32_INTR
-	assert(0);
 	// push eflags, cs and eip onto stack
         push(cpu.eflags.val, 32);
 	push(cpu.cs.val, 32);
@@ -28,6 +27,7 @@ void raise_intr(uint8_t intr_no)
 	if(idt_entry->type == 0xE){
 		cpu.eflags.IF = 0;
 	}
+	assert(0);
 	// set the cs:eip to the entry of the interrupt handler
 		// need to reload cs with load_sreg()
 	cpu.cs.val = idt_entry->selector;
