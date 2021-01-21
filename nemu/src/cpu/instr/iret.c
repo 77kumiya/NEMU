@@ -12,7 +12,7 @@ static uint32_t pop(){
 make_instr_func(iret){
 	cpu.eip = pop();
 	cpu.cs.val = (uint16_t)pop();
-	load_sreg(cpu.cs.val >> 3);
+	load_sreg(1);
 	cpu.eflags.val = pop();
 	return 1;
 }

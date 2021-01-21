@@ -27,7 +27,7 @@ void raise_intr(uint8_t intr_no)
 	// set the cs:eip to the entry of the interrupt handler
 		// need to reload cs with load_sreg()
 	cpu.cs.val = idt_entry.selector;
-	load_sreg(idt_entry.selector >> 3);
+	load_sreg(1);
 	cpu.eip = (idt_entry.offset_31_16 << 16) | idt_entry.offset_15_0;
 #endif
 }
