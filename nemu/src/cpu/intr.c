@@ -22,8 +22,8 @@ void raise_intr(uint8_t intr_no)
 	push(cpu.eip, 32);
 	// find the IDT entry
 	GateDesc *idt_entry = (GateDesc *)(cpu.idtr.base + (intr_no << 3));
-	assert(0);
 	assert(idt_entry->present == 1);
+	assert(0);
 	// clear IF if it is an interrupt
 	if(idt_entry->type == 0xE){
 		cpu.eflags.IF = 0;
