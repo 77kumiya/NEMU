@@ -2,24 +2,18 @@
 #include "cpu/instr.h"
 #include "memory/memory.h"
 
-static void push(uint32_t data, uint32_t size){
-	OPERAND dest;
-        cpu.esp -= 4;
-        dest.type = OPR_MEM;
-        dest.sreg = SREG_SS;
-        dest.data_size = size;
-        dest.addr = cpu.esp;
-        dest.val = data;
-        operand_write(&dest);
+static void push(uint32_t data){
+	cpu.esp -= 4;
+	vaddr_write(cpu.esp, SREG_SS, 4, data);
 }
 
 void raise_intr(uint8_t intr_no)
 {
 #ifdef IA32_INTR
 	// push eflags, cs and eip onto stack
-        push(cpu.eflags.val, 32);
-	push(cpu.cs.val, 32);
-	push(cpu.eip, 32);
+        push(cpu.eflags.val);
+	push(cpu.cs.val);
+	push(cpu.eip);
 	// find the IDT entry
 	laddr_t idt_entry_addr = cpu.idtr.base + (intr_no << 3);
 	GateDesc idt_entry;
