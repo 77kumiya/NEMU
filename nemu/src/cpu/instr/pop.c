@@ -16,5 +16,22 @@ static void instr_execute_1op(){
     operand_write(&opr_src);
 }
 
+static uint32_t pop(){
+	uint32_t ret = vaddr_read(cpu.esp, SREG_SS, 4);
+	cpu.esp += 4;
+	return ret;
+}
+
 make_instr_impl_1op(pop, r, v)
 make_instr_impl_1op(pop, rm, v)
+make_instr_func(popa){
+	cpu.edi = pop();
+	cpu.esi = pop();
+	cpu.ebp = pop();
+	pop();
+	cpu.ebx = pop();
+	cpu.edx = pop();
+	cpu.ecx = pop();
+	cpu.eax = pop();
+	return 1;
+}

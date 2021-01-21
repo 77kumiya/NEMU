@@ -17,7 +17,24 @@ static void instr_execute_1op(){
     operand_write(&opr_dest);
 }
 
+static void push(uint32_t data){
+	cpu.esp -= 4;
+	vaddr_write(cpu.esp, SREG_SS, 4, data);
+}
+
 make_instr_impl_1op(push, r, v)
 make_instr_impl_1op(push, rm, v)
 make_instr_impl_1op(push, i, b)
 make_instr_impl_1op(push, i, v)
+make_instr_func(pusha){
+	uint32_t temp = cpu.esp;
+	push(cpu.eax);
+	push(cpu.ecx);
+	push(cpu.edx);
+	push(cpu.ebx);
+	push(temp);
+	push(cpu.ebp);
+	push(cpu.esi);
+	push(cpu.edi);
+	return 1;
+}
