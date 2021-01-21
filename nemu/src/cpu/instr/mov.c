@@ -85,7 +85,7 @@ make_instr_func(mov_rm2sreg_w){
     opr_dest.type = OPR_SREG;
     print_asm_2("mov", "w", len, &opr_src, &opr_dest);
     instr_execute_2op();
-    load_sreg(opr_src.val >> 3);
+    load_sreg(opr_dest.addr);
     return len;
 }
 
