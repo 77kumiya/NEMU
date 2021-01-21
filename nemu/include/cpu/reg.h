@@ -5,9 +5,14 @@
 
 // GDTR, todo: define type GDTR
 typedef struct {
-    uint32_t limit : 16;
+	uint32_t limit : 16;
 	uint32_t base : 32;
 }GDTR;
+
+typedef struct {
+	uint32_t limit : 16;
+	uint32_t base : 32;
+}IDTR;
 
 // segment registers, todo: define type SegReg
 typedef struct {
