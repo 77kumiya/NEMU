@@ -22,12 +22,12 @@ void raise_intr(uint8_t intr_no)
 	push(cpu.eip, 32);
 	// find the IDT entry
 	GateDesc *idt_entry = (GateDesc *)(cpu.idtr.base + (intr_no << 3));
+	assert(0);
 	assert(idt_entry->present == 1);
 	// clear IF if it is an interrupt
 	if(idt_entry->type == 0xE){
 		cpu.eflags.IF = 0;
 	}
-	assert(0);
 	// set the cs:eip to the entry of the interrupt handler
 		// need to reload cs with load_sreg()
 	cpu.cs.val = idt_entry->selector;
