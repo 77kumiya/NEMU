@@ -4,6 +4,6 @@
 Put the declarations of `lidt' instructions here.
 */
 
-make_instr_impl_1op(lidt, rm, v);
+make_instr_func(lidt_rm_v);
 
 #endif
