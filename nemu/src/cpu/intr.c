@@ -17,20 +17,20 @@ void raise_intr(uint8_t intr_no)
 {
 #ifdef IA32_INTR
 	// push eflags, cs and eip onto stack
-        push(cpu.eflags, 32);
+        push(cpu.eflags.val, 32);
 	push(cpu.cs.val, 32);
 	push(cpu.eip, 32);
 	// find the IDT entry
 	GateDesc *idt_entry = (GateDesc *)(cpu.idtr.base + (intr_no << 3));
 	assert(idt_entry->present == 1);
 	// clear IF if it is an interrupt
-	if(idt_entry->type == INTERRUPT_GATE_32){
+	if(idt_entry->type == 0xE){
 		cpu.eflags.IF = 0;
 	}
 	// set the cs:eip to the entry of the interrupt handler
 		// need to reload cs with load_sreg()
-	cpu.cs.val = idt_entry->segment;
-	load_sreg(idt_entry->segment >> 3);
+	cpu.cs.val = idt_entry->selector;
+	load_sreg(idt_entry->selector >> 3);
 	cpu.eip = (idt_entry->offset_31_16 << 16) | idt_entry->offset_15_0;
 #endif
 }
