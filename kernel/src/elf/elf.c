@@ -38,7 +38,7 @@ uint32_t loader()
 		{
 #ifdef IA32_PAGE
 		    void *seg_paddr_base = (void *)mm_malloc(ph->p_vaddr, ph->p_memsz);
-		    memcpy(seg_paddr_base, (void *)elf + ph->p_offset, ph->p_filesz);
+		    ide_read(seg_paddr_base, ph->p_offset, ph->filesz);
             memset(seg_paddr_base + ph->p_filesz, 0, ph->p_memsz - ph->p_filesz);
 #else
             memcpy((void *)ph->p_vaddr, (void *)elf + ph->p_offset, ph->p_filesz);
