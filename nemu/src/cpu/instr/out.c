@@ -14,7 +14,7 @@ make_instr_func(out_v){
 	if(len == 2){
 		pio_write(cpu.gpr[REG_DX]._16, len, cpu.gpr[REG_AX]._16);
 	}else{
-		pio_write(cpu.gpr[REG_DX]._16, len, cpu.eax)
+		pio_write(cpu.gpr[REG_DX]._16, len, cpu.eax);
 	}
 	return 1;
 }
