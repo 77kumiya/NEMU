@@ -14,6 +14,6 @@ make_instr_func(iret){
 	cpu.cs.val = (uint16_t)pop();
 	load_sreg(1);
 	cpu.eflags.val = pop();
-	return 1;
+	return 0;
 }
 
