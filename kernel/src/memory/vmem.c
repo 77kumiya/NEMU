@@ -6,7 +6,7 @@
 #define SCR_SIZE (320 * 200)
 #define NR_PT ((SCR_SIZE + PT_SIZE - 1) / PT_SIZE) // number of page tables to cover the vmem
 
-PDE *get_updir();
+PDE *get_kpdir();
 
 void create_video_mapping()
 {
@@ -16,14 +16,14 @@ void create_video_mapping()
 	 * [0xa0000, 0xa0000 + SCR_SIZE) for user program. You may define
 	 * some page tables to create this mapping.
 	 */
-	PDE *updir = get_updir();
-	PDE *pde = updir + 0;
+	PDE *pdir = get_kpdir();
+	PDE *pde = pdir + 0;
 	pde->present = 1;
-	PTE *uptbl = (PTE *)(uint32_t)pde->page_frame;
+	PTE *ptbl = (PTE *)(uint32_t)pde->page_frame;
 	int i;
 	int vmem_pte_base_idx = 0xa0;
 	for(i = 0; i < NR_PT; ++i){
-		PTE *pte = (PTE *)((uint32_t)uptbl + (uint32_t)(vmem_pte_base_idx + i) * 4);
+		PTE *pte = (PTE *)((uint32_t)ptbl + (uint32_t)(vmem_pte_base_idx + i) * 4);
 		pte->present = 1;
 		pte->page_frame = vmem_pte_base_idx + i;
 	}
