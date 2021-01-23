@@ -18,11 +18,11 @@ void create_video_mapping()
 	 */
 	PDE *pdir = get_updir();
 	PDE *pde = pdir + 0;
-	pde->present = 1;
-	PTE *ptbl = (PTE *)(uint32_t)pde->page_frame;
+	assert(pde->present == 1);
+	PTE *ptbl = (PTE *)pa_to_va((uint32_t)pde->page_frame << 12);
 	int i;
 	int vmem_pte_base_idx = 0xa0;
-	for(i = 0; i <= NR_PT; ++i){
+	for(i = 0; i < NR_PT; ++i){
 		PTE *pte = (PTE *)((uint32_t)ptbl + (uint32_t)(vmem_pte_base_idx + i) * 4);
 		pte->present = 1;
 		pte->page_frame = vmem_pte_base_idx + i;
