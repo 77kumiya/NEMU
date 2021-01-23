@@ -21,11 +21,10 @@ void create_video_mapping()
 	assert(pde->present == 1);
 	PTE *ptbl = (PTE *)pa_to_va((uint32_t)pde->page_frame << 12);
 	int i;
-	int vmem_pte_base_idx = 0xa0;
-	for(i = 0; i < NR_PT; ++i){
-		PTE *pte = (PTE *)((uint32_t)ptbl + ((uint32_t)(vmem_pte_base_idx + i) << 2));
-		pte->page_frame = vmem_pte_base_idx + i;
-		pte->present = 1;
+	int vmem_pte_base_idx = 0x0a0;
+	for(i = 0; i < 16; ++i){
+		PTE *pte = ptbl + vmem_pte_base_idx + i;
+		pte->val = make_pte((vmem_pte_base_idx + i) << 12);
 	}
 }
 
