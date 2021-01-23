@@ -23,7 +23,7 @@ void create_video_mapping()
 	int i;
 	int vmem_pte_base_idx = 0xa0;
 	for(i = 0; i < NR_PT; ++i){
-		PTE *pte = uptbl[vmem_pte_base_idx + i];
+		PTE *pte = uptbl + vmem_pte_base_idx + i;
 		pte->present = 1;
 		pte->page_frame = vmem_pte_base_idx + i;
 	}
