@@ -213,6 +213,7 @@ cmd_handler(cmd_d)
 	return 0;
 }
 
+extern uint32_t vaddr_read(vaddr_t, uint8_t, size_t);
 cmd_handler(cmd_x)
 {
 	// a very simple x command
