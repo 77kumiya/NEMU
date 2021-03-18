@@ -213,6 +213,36 @@ cmd_handler(cmd_d)
 	return 0;
 }
 
+cmd_handler(cmd_x)
+{
+	// a very simple x command
+	// usage: x 0x<addr>, where <addr> is a hexadecimal memory address
+	// result: print 20 bytes of memory content starting from <addr>
+	char *arg = strtok(NULL, " ");
+	if (arg != NULL)
+	{
+		uint32_t addr = 0;
+		int i = 0;
+		if (sscanf(arg, "0x%x", &addr) == 1)
+		{
+			//printf("%d(%x): ", addr, addr);
+			printf("0x%x",addr);
+			for(; i < 20; i++)
+			{
+				printf(" %02x", vaddr_read(addr, SREG_CS, 1));
+				addr++;
+			}
+			printf("\n");
+			fflush(stdout);
+			return 0;
+		}
+	}
+	printf("usage: x 0x<addr>, where <addr> is a hexadecimal memory address\n");
+	printf("result: print 20 bytes of memory content starting from <addr>\n");
+	fflush(stdout);
+	return 0;
+}
+
 cmd_handler(cmd_help);
 
 static struct
@@ -233,7 +263,7 @@ static struct
 	/* TODO: Add more commands */
 	{"si", "Single Step Execution", cmd_si},
 	{"info", "Print register and watch point info", cmd_info},
-
+    {"x", "Scan memory", cmd_x}
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
