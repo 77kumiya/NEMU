@@ -56,6 +56,8 @@ static struct rule
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]))
+#define NUM_TOKEN 32
+#define TOKEN_LEN 32
 
 static regex_t re[NR_REGEX];
 
@@ -82,10 +84,10 @@ void init_regex()
 typedef struct token
 {
 	int type;
-	char str[32];
+	char str[TOKEN_LEN];
 } Token;
 
-Token tokens[32];
+Token tokens[NUM_TOKEN];
 int nr_token;
 
 static bool make_token(char *e)
