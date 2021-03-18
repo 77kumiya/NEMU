@@ -279,7 +279,7 @@ void ui_mainloop(bool autorun)
 			return;
 		}
 	}
-
+	
 	while (true)
 	{
 		// read user command
