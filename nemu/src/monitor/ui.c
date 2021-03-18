@@ -69,7 +69,11 @@ cmd_handler(cmd_si)
 cmd_handler(cmd_info)
 {
 	char *arg = strtok(NULL, " ");
-	if (strcmp(arg, "r") == 0)
+    if (arg == NULL)
+    {
+        printf("use \"info r\" to examine registers and \"info w\" to examine watchpoints\n");
+    }
+	else if (strcmp(arg, "r") == 0)
 	{
 		print_reg();
 	}
