@@ -18,7 +18,8 @@ void create_video_mapping()
 	 */
 	PDE *pdir = get_updir();
 	PDE *pde = pdir + 0;
-	assert(pde->present == 1);
+	//assert(pde->present == 1);
+    pde->present == 1
 	PTE *ptbl = (PTE *)pa_to_va((uint32_t)pde->page_frame << 12);
 	int i;
 	int vmem_pte_base_idx = 0x0a0;
