@@ -16,7 +16,7 @@ run: nemu
 
 run-kernel: nemu
 	$(call git_commit, "run-kernel", $(TIME_MAKE))
-	./nemu/nemu --kernel --autorun --testcase hello-inline
+	./nemu/nemu --autorun --testcase echo --kernel
 
 debug: nemu
 	$(call git_commit, "debug", $(TIME_MAKE))
