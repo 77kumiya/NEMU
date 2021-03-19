@@ -22,7 +22,7 @@ inline uint32_t internal_normalize(uint32_t sign, int32_t exp, uint64_t sig_grs)
 			   )
 		{
 
-			/* TODO: shift right, pay attention to sticky bit*/
+			/* shift right, pay attention to sticky bit */
 			sticky |= sig_grs & 0x1;
 			sig_grs = sig_grs >> 1;
 			++exp;
@@ -31,7 +31,7 @@ inline uint32_t internal_normalize(uint32_t sign, int32_t exp, uint64_t sig_grs)
 
 		if (exp >= 0xff)
 		{
-			/* TODO: assign the number to infinity */
+			/* assign the number to infinity */
 			exp = 0xff;
 			sig_grs = 0x0;
 			overflow = true;
@@ -40,14 +40,14 @@ inline uint32_t internal_normalize(uint32_t sign, int32_t exp, uint64_t sig_grs)
 		{
 			// we have a denormal here, the exponent is 0, but means 2^-126,
 			// as a result, the significand should shift right once more
-			/* TODO: shift right, pay attention to sticky bit*/
+			/* shift right, pay attention to sticky bit*/
 			sticky = sig_grs & 0x1;
 			sig_grs = sig_grs >> 1;
 			sig_grs |= sticky;
 		}
 		else if (exp < 0)
 		{
-			/* TODO: assign the number to zero */
+			/* assign the number to zero */
 			exp = 0x0;
 			sig_grs = 0x0;
 			overflow = true;
@@ -58,14 +58,14 @@ inline uint32_t internal_normalize(uint32_t sign, int32_t exp, uint64_t sig_grs)
 		// normalize toward left
 		while (((sig_grs >> (23 + 3)) == 0) && exp > 0)
 		{
-			/* TODO: shift left */
+			/* shift left */
 			sig_grs = sig_grs << 1;
 			--exp;
 		}
 		if (exp == 0)
 		{
 			// denormal
-			/* TODO: shift right, pay attention to sticky bit*/
+			/* shift right, pay attention to sticky bit */
 			uint32_t sticky = sig_grs & 0x1;
 			sig_grs = sig_grs >> 1;
 			sig_grs |= sticky;
@@ -79,7 +79,7 @@ inline uint32_t internal_normalize(uint32_t sign, int32_t exp, uint64_t sig_grs)
 
 	if (!overflow)
 	{
-		/* TODO: round up and remove the GRS bits */
+		/* round up and remove the GRS bits */
 		uint32_t grs = sig_grs & 0x7;
 		sig_grs = sig_grs >> 3;
 		if(grs > 4 || (grs == 4 && (sig_grs & 0x1) == 1))
@@ -297,7 +297,7 @@ uint32_t internal_float_mul(uint32_t b, uint32_t a)
 	sig_res = sig_a * sig_b; // 24b * 24b
     sig_res = sig_res << 3; // leave space for GRS bits.
     
-	/* TODO: exp_res = ? leave space for GRS bits. */
+	/* leave space for GRS bits. */
 	uint32_t exp_res = fa.exponent + fb.exponent - 150;
 	if(exp_res == 0 && (sig_res >> 26) == 1)
 	{

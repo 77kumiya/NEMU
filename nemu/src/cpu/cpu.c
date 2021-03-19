@@ -106,7 +106,7 @@ void exec(uint32_t n)
 			}
 		}
 #if defined(HAS_DEVICE_TIMER) || defined(HAS_DEVICE_VGA) || defined(HAS_DEVICE_KEYBOARD) || defined(HAS_DEVICE_AUDIO)
-	do_devices();
+	    do_devices();
 #endif
 #ifdef IA32_INTR
 		// check for interrupt

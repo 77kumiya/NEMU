@@ -265,7 +265,7 @@ static struct
 	{"d", "Delete breakpoint(s).", cmd_d},
 	{"exit", "Exit NEMU", cmd_q},
 
-	/* TODO: Add more commands */
+	/* add more commands if needed*/
 	{"si", "Single Step Execution", cmd_si},
 	{"info", "Print register and watch point info", cmd_info},
     {"x", "Scan memory", cmd_x}

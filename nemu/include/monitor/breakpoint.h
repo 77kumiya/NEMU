@@ -37,7 +37,7 @@ typedef struct breakpoint
 	int type;
 	struct breakpoint *next;
 
-	/* TODO: Add more member if necessary */
+	/* Add more member if necessary */
 
 } BP;
 

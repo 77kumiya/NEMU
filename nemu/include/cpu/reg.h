@@ -3,7 +3,6 @@
 
 #include "nemu.h"
 
-// GDTR, todo: define type GDTR
 typedef struct {
 	uint32_t limit : 16;
 	uint32_t base : 32;
@@ -14,7 +13,7 @@ typedef struct {
 	uint32_t base : 32;
 }IDTR;
 
-// segment registers, todo: define type SegReg
+// segment registers type SegReg
 typedef struct {
     // the 16-bit visible part, i.e., the selector
 	union {
@@ -36,7 +35,7 @@ typedef struct {
 	};
 }SegReg;
     
-// control registers, todo: define type CR0
+// control registers type CR0
 typedef union {
 	struct {
 		uint32_t pe : 1;
@@ -50,7 +49,7 @@ typedef union {
 	uint32_t val; 	
 }CR0;
 
-// control registers, todo: define type CR3
+// control registers type CR3
 typedef union {
     struct {
         uint32_t reserved : 12;
@@ -76,7 +75,7 @@ typedef struct
 			uint32_t val;
 		} gpr[8];
 		struct
-		{ // do not change the order of the registers
+		{ // the order of the registers matters; do not change
 			uint32_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
 		};
 	};
@@ -131,7 +130,7 @@ typedef struct
 
 #ifdef IA32_INTR
 	// interrupt
-	IDTR idtr; // IDTR, todo: define type IDTR
+	IDTR idtr;
 	uint8_t intr;
 #else
 	uint8_t dummy_intr[7];
