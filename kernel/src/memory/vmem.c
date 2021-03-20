@@ -8,18 +8,20 @@
 
 PDE *get_updir();
 PTE table[1024] align_to_page;
+extern PTE kptable[];
 
 void create_video_mapping()
 {
 
-	/* TODO: create an identical mapping from virtual memory area
+	/* create an identical mapping from virtual memory area
 	 * [0xa0000, 0xa0000 + SCR_SIZE) to physical memeory area
 	 * [0xa0000, 0xa0000 + SCR_SIZE) for user program. You may define
 	 * some page tables to create this mapping.
 	 */
-    PDE *pdir = (PDE *)va_to_pa(get_updir());
-	PTE *ptable = (PTE *)va_to_pa(table);
-	pdir[0].val = make_pde(ptable); 
+    //PDE *pdir = (PDE *)va_to_pa(get_updir());
+    PDE *pdir = get_updir();
+	PTE *ptable = (PTE *)va_to_pa(kptable);
+	pdir[0].val = make_pde(ptable);
 	ptable += 0xa0;
 	for(uint32_t i = 0xa0; i <= 0xaf; ++i)
     {
