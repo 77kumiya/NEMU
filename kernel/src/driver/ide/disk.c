@@ -17,8 +17,7 @@ static void waitdisk()
 		;
 }
 
-static void
-ide_prepare(uint32_t sector)
+static void ide_prepare(uint32_t sector)
 {
 	waitdisk();
 
@@ -35,8 +34,7 @@ ide_prepare(uint32_t sector)
 	out_byte(IDE_PORT_BASE + 6, 0xE0 | ((sector >> 24) & 0xFF));
 }
 
-static inline void
-issue_read()
+static inline void issue_read()
 {
 #ifdef USE_DMA_READ
 	out_byte(IDE_PORT_BASE + 7, 0xc8);
@@ -46,8 +44,7 @@ issue_read()
 #endif
 }
 
-static inline void
-issue_write()
+static inline void issue_write()
 {
 	out_byte(IDE_PORT_BASE + 7, 0x30);
 }

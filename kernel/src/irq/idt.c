@@ -7,7 +7,7 @@
 /* Each entry of the IDT is either an interrupt gate, or a trap gate */
 static GateDesc idt[NR_IRQ];
 
-/* Setup a interrupt gate for interrupt handler. */
+/* Setup an interrupt gate for interrupt handler. */
 static void set_intr(GateDesc *ptr, uint32_t selector, uint32_t offset, uint32_t dpl)
 {
 	ptr->offset_15_0 = offset & 0xFFFF;
