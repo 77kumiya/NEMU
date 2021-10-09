@@ -191,7 +191,11 @@ cmd_handler(cmd_d)
 		while (1)
 		{
 			printf("Deleta all breakpoints? (y or n)");
-			scanf("%c", &c);
+			if (scanf("%c", &c) != 1)
+			{
+				printf("Reading command failed, please try again.\n");
+				continue;
+			}
 			switch (c)
 			{
 			case 'y':
