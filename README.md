@@ -1,32 +1,43 @@
 # NEMU
-一、用软件实现了对下列硬件的模拟：
-  1) 计算器件(x86 CPU)
-    a) 寄存器：通用寄存器、标志寄存器、段寄存器、程序计数器、控制寄存器、GDTR、IDTR；
-    b) ALU、FPU运算器；
-    c) 控制器：取指译码器；
-    d) MMU内存管理单元；
-    e) Cache；
-	  f) i8259中断控制器。
-  2) 内存。
-  3) 异常和中断响应机制
-    a) 异常：只实现了系统调用(int 0x80)；
-    b) 中断：实现了外部设备IO中断。
-  4) 一些常见的IO设备
-    a) 键盘；
-    b) 串口；
-    c) 硬盘；
-    d) 显示器；
-    e) 时钟。
 
-二、一个简单的操作系统内核
-  1) 程序加载；
-  2) 虚存管理；
-  3) 系统调用；
-  4) 中断处理；
-  5) 设备驱动。
-  
-三、一个Debugger
-  1) 单步执行；
-  2) 扫描寄存器、内存；
-  3) 表达式计算：支持+-*/=!=&&||!、解引用、括号、10进制整数、16进制整数、寄存器名称、符号；
-  4) 设置和删除断点和监视点。
+NEMU is a simplified but complete computer system emulator, including a virtual machine, an operating system and a monitor with common debugging features to support development on NEMU.
+
+## Virtual Machine
+
+Emulated logic of common computing hardware, including:
+
+1. Intel 80386 CPU
+    - Registers: general purpose registers, eflag register, segment registers, program counter, control registers, GDTR, IDTR.
+    - ALU, FPU
+    - Control Unit: instruction fetcher and decoder
+    - MMU
+    - Cache
+    - i8259a interrupt controller
+2. Main memory
+3. Interrupt and exception handling mechanism
+    - Exception: system calls
+    - Interrupt: I/O interrupts
+4. Common I/O devices
+    - Disk
+    - Keyboard
+    - Serial
+    - VGA
+    - Timer
+
+## Operating System
+
+Provided following simplified and necessary support for applications programs:
+1. Program loader
+2. Virtual memory management
+3. System calls
+4. Interrupt handling mechanism
+5. Device drivers
+
+## Monitor
+
+Provided commonly used debugging features:
+1. Break points
+2. Watch points
+3. Single step execution
+4. Register/memory examination
+5. Expression evaluation with the support of symbols
